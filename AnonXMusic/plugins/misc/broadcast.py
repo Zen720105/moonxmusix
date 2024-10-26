@@ -30,17 +30,10 @@ async def broadcast_message(client, message, _):
         if len(message.command) < 2:
             return await message.reply_text(_["broad_2"])
         query = message.text.split(None, 1)[1]
-        if "-pin" in query:
-            query = query.replace("-pin", "")
-        if "-nobot" in query:
-            query = query.replace("-nobot", "")
-        if "-pinloud" in query:
-            query = query.replace("-pinloud", "")
-        if "-assistant" in query:
-            query = query.replace("-assistant", "")
-        if "-user" in query:
-            query = query.replace("-user", "")
-        if query == "":
+        query_flags = ["-pin", "-nobot", "-pinloud", "-assistant", "-user"]
+        for flag in query_flags:
+            query = query.replace(flag, "")
+        if query.strip() == "":
             return await message.reply_text(_["broad_8"])
 
     IS_BROADCASTING = True
@@ -49,10 +42,7 @@ async def broadcast_message(client, message, _):
     if "-nobot" not in message.text:
         sent = 0
         pin = 0
-        chats = []
-        schats = await get_served_chats()
-        for chat in schats:
-            chats.append(int(chat["chat_id"]))
+        chats = [int(chat["chat_id"]) for chat in await get_served_chats()]
         for i in chats:
             try:
                 m = (
@@ -87,10 +77,7 @@ async def broadcast_message(client, message, _):
 
     if "-user" in message.text:
         susr = 0
-        served_users = []
-        susers = await get_served_users()
-        for user in susers:
-            served_users.append(int(user["user_id"]))
+        served_users = [int(user["user_id"]) for user in await get_served_users()]
         for i in served_users:
             try:
                 m = (
@@ -161,5 +148,5 @@ async def auto_clean():
         except:
             continue
 
-asyncio.create_task(auto_clean())auto_clean())
-
+# Correcting the placement of asyncio.create_task(auto_clean())
+asyncio.create_task(auto_clean())
